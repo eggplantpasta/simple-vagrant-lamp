@@ -1,10 +1,19 @@
 # Simple Vagrant LAMP box
 
+## Quickstart
+- install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- install [Vagrant](http://www.vagrantup.com/downloads.html)
+- clone repository `git clone https://github.com/eggplantpasta/simple-vagrant-lamp myproject`
+- `cd myproject`
+- `vagrant up`
+- Access [webserver here](http://192.168.56.101), which is serving pages from the directory `./www`.
+- Access php generated [mail here](http://192.168.56.101:1080/)
+
 ## Features
-- Simple administration.  This script doesn't require the learning curve of Puppet or Chef, though I recommend you looking into either of those solutions.  Instead, it uses a simple shell script to install packages and import the database.
+- Simple configuration.  This script doesn't require the learning curve of Puppet or Chef, though I recommend you looking into either of those solutions.  Instead, it uses a single shell script to install packages and import the database.
 - VM Description
 	- 1GB RAM
-	- Ubuntu 12.04 LTS 64-bit
+	- Ubuntu 12.04 LTS 32-bit
 	- Apache w/ mod_rewrite
 	- MySQL
 	- PHP
@@ -20,13 +29,13 @@ These folders are used as follows:
 - www
 	- This is the web root of the website you want hosted in the VM
 - sqldump
-	- This is where the database SQL file is stored.  Initially it's fine for this to be empty, but if you destory the VM, a sqldump file located here will be imported into the VM's database when it is created.  The file should be named `database.sql`
+	- This is where the database SQL file is stored.  Initially it's fine for this to be empty, but if you destory the VM, a sqldump file located here will be imported into the VM's database when it is recreated.  The file should be named `database.sql`
 - scripts
-	- This is where you can place various scripts that you might want access to.  A good example would be a script that can dump out the database and place it in the folder where the VM will look to import it from when it is being created.  See below section for an example command to dump the database.  You can run that script any time you want to update the backup of your database that will be restored when the VM is created.
+	- This is where you can place various scripts that you might want access to.  A good example would be a script that can dump out the database and place it in the shared folder where the VM will use it when being created (see below).
 
 When you first boot the VM or recreate it, you might see some warning messages from apache about not being able to determine the ServerName.  The bootstrap file eventually fixes this as it goes through its process.  There is also an rdoc notice that can be ignored.
 
-Edit your local hosts file to point a domain to `192.168.56.101` then use that domain in your browser to hit the site your VM is serving.
+Edit your local hosts file to point a domain to 192.168.56.101 then use that domain in your browser to hit the site your VM is serving.
 
 ## What is the bootstrap.sh script doing?
 - Sets the MySQL root password to `root`
@@ -49,13 +58,14 @@ Edit your local hosts file to point a domain to `192.168.56.101` then use that d
 	- Tells PHP about XDebug
 - Restarts Apache
 
-## Creating the database dump file
-In case you need some assistance, this command, run from inside the VM, will dump the `devdb` database into a file called `database.sql` and place it into `/var/sqldump/` which should be shared to your host computer, thus it will continue to exist even if the VM is destroyed.
+## Creating a database dump file
+In case you need some assistance, this command, run from inside the VM, will dump the `devdb` database into a file called `database.sql` and place it into `/var/sqldump/` which should be shared to your host computer, thus it will continue to exist even if the VM is destroyed.  You can run this script any time you want to update the backup of your database. This will be restored when the VM is (re)created. A good place to sore utility scripts like this is the shared `./scripts` folder.
 
-`mysqldump -uroot -proot devdb > /var/sqldump/database.sql`
+```bash
+mysqldump -uroot -proot devdb > /var/sqldump/database.sql
+```
 
-## Using MailCatcher
-- Load [http://192.168.56.101:1080/](http://192.168.56.101:1080/) in your browser to view the MailCatcher interface
+## MailCatcher
+- Load [http://192.168.56.101:1080/](http://192.168.56.101:1080/) in your browser to view the MailCatcher interface.
 
-## What is MailCatcher?
-Check out the [MailCatcher](http://mailcatcher.me/) homepage, but the short description is that it catches email being sent and let's you view it via a web interface (port 1080 on the VM).  This way you don't have to actually send email through the internet and wait for it to be delivered, etc.  You can check the queue with your browser easily and clear it whenever you'd like.  This also means that you could make your VM send thousands of emails (intentionally or unintentionally) and easily see if they would have been delivered.
+Check out the [MailCatcher](http://mailcatcher.me/) homepage for more details but basically it catches email being sent and let's you view it via a web interface (port 1080 on the VM).  This way you don't have to actually send email through the internet and wait for it to be delivered, etc.  You can check the queue with your browser easily and clear it whenever you'd like.  This also means that you could make your VM send thousands of emails (intentionally or unintentionally) and easily see if they would have been delivered.
