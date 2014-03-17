@@ -5,7 +5,7 @@ sudo apt-get -y install mysql-server-5.5 php5-mysql libsqlite3-dev apache2 php5 
 
 
 # Set timezone
-echo "America/New_York" | sudo tee /etc/timezone
+echo "Australia/Perth" | sudo tee /etc/timezone
 sudo dpkg-reconfigure --frontend noninteractive tzdata
 
 
