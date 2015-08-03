@@ -22,7 +22,12 @@
 	- MySQL database named `devdb` and a username of `devdb` having access to it with the password `devdb`
 
 ## Setup
-The `Vagrantfile` shares 4 folders from your host machine into your VM: `./www`, `./sqldump`, `./scripts`, and `./custom_config/files`. If these folders don't exist they will be created when `vagrant up` is run. It is recommended to symlink folders from your current project to these in the vagrant folder and then you can change the symlinks to move between projects - e.g. `ln -fs ~/Sites/dev ./www`. You can do this either before or after `vagrant up`.
+The `Vagrantfile` shares 4 folders from your host machine into your VM: `./www`, `./sqldump`, `./scripts`, and `./custom_config/files`. If these folders don't exist they will be created when `vagrant up` is run. It is recommended to symlink folders from your current project to these in the vagrant folder and then you can change the symlinks to move between projects - e.g. 
+```bash
+rm ./www
+ln -fs ~/Sites/dev ./www
+```
+You can do this either before or after `vagrant up`.
 
 **Note:** these files are excluded by default in the `.gitignore` as it's assumed that  the project is source code controlled and symlinked from elsewhere.
 
